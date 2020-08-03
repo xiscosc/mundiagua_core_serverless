@@ -1,6 +1,6 @@
 package com.xsc.mundiagua.repository.model.customer
 
-import com.xsc.mundiagua.model.customer.Phone
+import com.xsc.mundiagua.service.model.customer.Phone
 
 class DynamoDBPhone() {
     var id: String? = null

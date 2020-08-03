@@ -1,6 +1,6 @@
 package com.xsc.mundiagua.api.model.customer
 
-import com.xsc.mundiagua.model.customer.Phone
+import com.xsc.mundiagua.service.model.customer.Phone
 
 data class RequestPhone(
         val id: String,

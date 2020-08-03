@@ -1,6 +1,6 @@
 package com.xsc.mundiagua.service
 
-import com.xsc.mundiagua.model.customer.Customer
+import com.xsc.mundiagua.service.model.customer.Customer
 import com.xsc.mundiagua.repository.CustomerRepository
 import com.xsc.mundiagua.repository.model.customer.DynamoDBCustomer
 

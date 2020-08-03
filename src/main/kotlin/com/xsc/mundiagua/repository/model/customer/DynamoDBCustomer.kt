@@ -1,7 +1,7 @@
 package com.xsc.mundiagua.repository.model.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*
-import com.xsc.mundiagua.model.customer.Customer
+import com.xsc.mundiagua.service.model.customer.Customer
 import com.xsc.mundiagua.repository.dynamodbconverter.DynamoDBAddressTypedConverter
 import com.xsc.mundiagua.repository.dynamodbconverter.DynamoDBPhoneTypedConverter
 

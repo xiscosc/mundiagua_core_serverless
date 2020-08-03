@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.model.customer
+package com.xsc.mundiagua.service.model.customer
 
 data class Phone(
         val id: String,

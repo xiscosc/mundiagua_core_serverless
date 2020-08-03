@@ -1,6 +1,6 @@
 package com.xsc.mundiagua.api.model.customer
 
-import com.xsc.mundiagua.model.customer.Customer
+import com.xsc.mundiagua.service.model.customer.Customer
 
 data class RequestCustomer(
     val uuid: String?,

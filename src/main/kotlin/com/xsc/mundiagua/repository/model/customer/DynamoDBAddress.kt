@@ -1,6 +1,6 @@
 package com.xsc.mundiagua.repository.model.customer
 
-import com.xsc.mundiagua.model.customer.Address
+import com.xsc.mundiagua.service.model.customer.Address
 
 class DynamoDBAddress() {
     var id: String? = null

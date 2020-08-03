@@ -1,6 +1,6 @@
 package com.xsc.mundiagua.api.model.customer
 
-import com.xsc.mundiagua.model.customer.Address
+import com.xsc.mundiagua.service.model.customer.Address
 
 data class RequestAddress(
         val id: String,
