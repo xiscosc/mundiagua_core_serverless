@@ -1,0 +1,81 @@
+service: com-xsc-mundiagua
+
+custom:
+  customerTableName: 'customer-table-${self:provider.stage}'
+
+provider:
+  name: aws
+  runtime: java8
+  stage: dev
+  logs:
+    restApi: true
+  tracing:
+    apiGateway: true
+    lambda: true
+  region: eu-west-3
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchGetItem
+        - dynamodb:BatchWriteItem
+      Resource:
+        - { "Fn::GetAtt": ["CustomerDynamoTable", "Arn" ] }
+        - { "Fn::Join": [ "/", [{ "Fn::GetAtt": ["CustomerDynamoTable", "Arn" ] }, "index", "*" ] ] }
+  environment:
+    CUSTOMER_TABLE: ${self:custom.customerTableName}
+
+
+package:
+  artifact: build/libs/mundiagua_kotlin-alpha-all.jar
+
+functions:
+  getCustomer:
+    handler: com.xsc.mundiagua.api.serverless.customer.GetCustomerHandler
+    events:
+      - http:
+          path: customer/{uuid}
+          method: get
+  createCustomer:
+    handler: com.xsc.mundiagua.api.serverless.customer.CreateCustomerHandler
+    events:
+      - http:
+          path: customer
+          method: post
+
+resources:
+  Resources:
+    CustomerDynamoTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: N
+          - AttributeName: uuid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: uuid
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: mundiaguaId
+            KeySchema:
+              - AttributeName: key
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        TableName: ${self:custom.customerTableName}
