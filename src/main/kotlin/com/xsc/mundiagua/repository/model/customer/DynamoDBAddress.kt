@@ -1,7 +1,9 @@
 package com.xsc.mundiagua.repository.model.customer
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument
 import com.xsc.mundiagua.service.model.customer.Address
 
+@DynamoDBDocument
 class DynamoDBAddress() {
     var id: String? = null
     var alias: String? = null

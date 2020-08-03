@@ -2,8 +2,6 @@ package com.xsc.mundiagua.repository.model.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*
 import com.xsc.mundiagua.service.model.customer.Customer
-import com.xsc.mundiagua.repository.dynamodbconverter.DynamoDBAddressTypedConverter
-import com.xsc.mundiagua.repository.dynamodbconverter.DynamoDBPhoneTypedConverter
 
 class DynamoDBCustomer {
     @get:DynamoDBIndexHashKey(attributeName = "key", globalSecondaryIndexName = SECONDARY_UUID_INDEX_NAME)
@@ -27,11 +25,9 @@ class DynamoDBCustomer {
     @get:DynamoDBAttribute(attributeName = "nationalId")
     var nationalId: String? = null
 
-    @get:DynamoDBTypeConverted(converter = DynamoDBPhoneTypedConverter::class)
     @get:DynamoDBAttribute(attributeName = "phones")
     var phones: MutableMap<String, DynamoDBPhone>? = mutableMapOf()
 
-    @get:DynamoDBTypeConverted(converter = DynamoDBAddressTypedConverter::class)
     @get:DynamoDBAttribute(attributeName = "addresses")
     var addresses: MutableMap<String, DynamoDBAddress>? = mutableMapOf()
 
