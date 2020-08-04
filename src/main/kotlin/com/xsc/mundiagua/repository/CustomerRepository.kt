@@ -6,13 +6,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
 import com.xsc.mundiagua.repository.model.customer.DynamoDBCustomer
 import com.xsc.mundiagua.repository.model.customer.DynamoDBPhone
+import com.xsc.mundiagua.service.model.customer.Customer
+import com.xsc.mundiagua.service.model.customer.Phone
 import java.util.*
 
 
@@ -34,11 +35,12 @@ class CustomerRepository {
         .build()
     private val mapper = DynamoDBMapper(client, config)
 
-    fun getCustomer(uuid: String): DynamoDBCustomer? {
-        return mapper.load(DynamoDBCustomer::class.java, uuid, config)
+    fun getCustomer(uuid: String): Customer? {
+        val dynamoCustomer = mapper.load(DynamoDBCustomer::class.java, uuid, config) ?: return null
+        return DynamoDBCustomer.adaptToModel(dynamoCustomer)
     }
 
-    fun getCustomer(id: Int): DynamoDBCustomer? {
+    fun getCustomer(id: Int): Customer? {
         val customer = DynamoDBCustomer()
         customer.id = id
         val queryExpression= DynamoDBQueryExpression<DynamoDBCustomer>()
@@ -50,29 +52,27 @@ class CustomerRepository {
         return if (items.size == 0) {
             null
         } else {
-            items[0]
+            DynamoDBCustomer.adaptToModel(items[0])
         }
     }
 
-    fun saveNewCustomer(customer: DynamoDBCustomer): DynamoDBCustomer {
-        customer.uuid = UUID.randomUUID().toString()
-        mapper.save(customer)
-        return customer
+    fun saveNewCustomer(customer: Customer): Customer {
+        val dynamoCustomer = DynamoDBCustomer.adaptToDbRecord(customer)
+        dynamoCustomer.uuid = UUID.randomUUID().toString()
+        mapper.save(dynamoCustomer)
+        return DynamoDBCustomer.adaptToModel(dynamoCustomer)
     }
 
-    fun saveNewPhone(uuid: String, phone: DynamoDBPhone): DynamoDBPhone? {
-        if (phone.id.isNullOrBlank()) {
-            return null
-        }
-
-        val phoneId = phone.id!!
+    fun saveNewPhone(uuid: String, phone: Phone): Phone? {
+        val dynamoPhone = DynamoDBPhone.adaptToDbRecord(phone)
+        val phoneId = dynamoPhone.id!!
         val dynamodb = DynamoDB(client)
         val customerTable = dynamodb.getTable(tableName)
         val updateItemSpec = UpdateItemSpec()
             .withPrimaryKey(DynamoDBCustomer.PRIMARY_INDEX_HASH_KEY, uuid)
             .withUpdateExpression("set phones.#phoneid = :phone")
             .withNameMap(NameMap().with("#phoneid", phoneId))
-            .withValueMap(ValueMap().withMap(":phone", phone.toValueMap()))
+            .withValueMap(ValueMap().withMap(":phone", dynamoPhone.toValueMap()))
             .withReturnValues(ReturnValue.ALL_NEW);
 
         customerTable.updateItem(updateItemSpec)
