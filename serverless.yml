@@ -47,6 +47,12 @@ functions:
       - http:
           path: customer
           method: post
+  createCustomerPhone:
+    handler: com.xsc.mundiagua.api.serverless.customer.CreatePhoneHandler
+    events:
+      - http:
+          path: customer/{uuid}/phone
+          method: post
 
 resources:
   Resources:

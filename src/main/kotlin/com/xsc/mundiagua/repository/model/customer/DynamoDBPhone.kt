@@ -10,6 +10,16 @@ class DynamoDBPhone() {
     var countryCode: Int? = null
     var phoneNumber: Int? = null
 
+    fun toValueMap(): Map<String, Any?>
+    {
+        return mapOf(
+            "id" to id,
+            "alias" to alias,
+            "countryCode" to countryCode,
+            "phoneNumber" to phoneNumber
+        )
+    }
+
     companion object {
         fun adaptToModel(dbrecord: DynamoDBPhone): Phone {
             return Phone(

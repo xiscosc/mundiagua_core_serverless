@@ -4,10 +4,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*
 import com.xsc.mundiagua.service.model.customer.Customer
 
 class DynamoDBCustomer {
-    @get:DynamoDBIndexHashKey(attributeName = "key", globalSecondaryIndexName = SECONDARY_UUID_INDEX_NAME)
-    var key: String = PARTITION_KEY
+    @get:DynamoDBIndexHashKey(attributeName = "key", globalSecondaryIndexName = SECONDARY_INDEX_NAME)
+    var key: String = SECONDARY_INDEX_HASH_KEY
 
-    @get:DynamoDBIndexRangeKey(attributeName = "id", globalSecondaryIndexName = SECONDARY_UUID_INDEX_NAME)
+    @get:DynamoDBIndexRangeKey(attributeName = "id", globalSecondaryIndexName = SECONDARY_INDEX_NAME)
     var id: Int? = null
 
     @get:DynamoDBHashKey(attributeName = "uuid")
@@ -26,14 +26,15 @@ class DynamoDBCustomer {
     var nationalId: String? = null
 
     @get:DynamoDBAttribute(attributeName = "phones")
-    var phones: MutableMap<String, DynamoDBPhone>? = mutableMapOf()
+    var phones: MutableMap<String, DynamoDBPhone>? = null
 
     @get:DynamoDBAttribute(attributeName = "addresses")
-    var addresses: MutableMap<String, DynamoDBAddress>? = mutableMapOf()
+    var addresses: MutableMap<String, DynamoDBAddress>? = null
 
     companion object {
-        const val PARTITION_KEY = "CUSTOMER"
-        const val SECONDARY_UUID_INDEX_NAME ="mundiaguaId"
+        const val PRIMARY_INDEX_HASH_KEY = "uuid"
+        const val SECONDARY_INDEX_HASH_KEY = "CUSTOMER"
+        const val SECONDARY_INDEX_NAME ="mundiaguaId"
 
         fun adaptToModel(dbrecord: DynamoDBCustomer): Customer {
             return Customer(
