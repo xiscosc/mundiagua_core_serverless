@@ -1,6 +1,8 @@
 package com.xsc.mundiagua.repository.model.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.xsc.mundiagua.service.model.customer.Address
 
 @DynamoDBDocument
@@ -11,6 +13,11 @@ class DynamoDBAddress() {
     var latitude: String? = null
     var longitude: String? = null
     var defaultZoneId: Int? = null
+
+    fun toValueMap(): Map<String, Any?>
+    {
+        return ObjectMapper().convertValue<Map<String, Any?>>(this, object: TypeReference<Map<String, Any?>>() {})
+    }
 
     companion object {
         fun adaptToModel(dbrecord: DynamoDBAddress): Address {

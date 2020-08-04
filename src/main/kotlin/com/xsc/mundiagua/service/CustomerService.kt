@@ -2,6 +2,7 @@ package com.xsc.mundiagua.service
 
 import com.xsc.mundiagua.service.model.customer.Customer
 import com.xsc.mundiagua.repository.CustomerRepository
+import com.xsc.mundiagua.service.model.customer.Address
 import com.xsc.mundiagua.service.model.customer.Phone
 
 class CustomerService {
@@ -22,5 +23,10 @@ class CustomerService {
     fun savePhone(customerUuid: String, phone: Phone): Phone? {
         customerRepository.saveNewPhone(customerUuid, phone) ?: return null
         return phone
+    }
+
+    fun saveAddress(customerUuid: String, address: Address): Address? {
+        customerRepository.saveNewAddress(customerUuid, address) ?: return null
+        return address
     }
 }
