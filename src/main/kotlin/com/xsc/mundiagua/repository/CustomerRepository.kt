@@ -10,9 +10,9 @@ import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
-import com.xsc.mundiagua.repository.model.customer.DynamoDBAddress
-import com.xsc.mundiagua.repository.model.customer.DynamoDBCustomer
-import com.xsc.mundiagua.repository.model.customer.DynamoDBPhone
+import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBAddress
+import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBCustomer
+import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBPhone
 import com.xsc.mundiagua.service.model.customer.Address
 import com.xsc.mundiagua.service.model.customer.Customer
 import com.xsc.mundiagua.service.model.customer.Phone
@@ -52,7 +52,7 @@ class CustomerRepository {
     }
 
     fun saveNewCustomer(customer: Customer): Customer {
-        val dynamoCustomer = DynamoDBCustomer.adaptToDbRecord(customer)
+        val dynamoCustomer = DynamoDBCustomer.adaptFromModel(customer)
         dynamoCustomer.uuid = UUID.randomUUID().toString()
         dynamoCustomer.id = getNewCustomerId()
         mapper.save(dynamoCustomer)
@@ -60,7 +60,7 @@ class CustomerRepository {
     }
 
     fun saveNewPhone(uuid: String, phone: Phone): Phone? {
-        val dynamoPhone = DynamoDBPhone.adaptToDbRecord(phone)
+        val dynamoPhone = DynamoDBPhone.adaptFromModel(phone)
         val phoneId = dynamoPhone.id!!
         val dynamodb = DynamoDB(client)
         val customerTable = dynamodb.getTable(tableName)
@@ -76,7 +76,7 @@ class CustomerRepository {
     }
 
     fun saveNewAddress(uuid: String, address: Address): Address? {
-        val dynamoAddress = DynamoDBAddress.adaptToDbRecord(address)
+        val dynamoAddress = DynamoDBAddress.adaptFromModel(address)
         val addressId = dynamoAddress.id!!
         val dynamodb = DynamoDB(client)
         val customerTable = dynamodb.getTable(tableName)

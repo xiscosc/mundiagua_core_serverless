@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.repository.model.customer
+package com.xsc.mundiagua.repository.dynamomodel.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument
 import com.fasterxml.jackson.core.type.TypeReference
@@ -31,8 +31,8 @@ class DynamoDBAddress() {
             )
         }
 
-        fun adaptToDbRecord(model: Address): DynamoDBAddress {
-            val record =  DynamoDBAddress()
+        fun adaptFromModel(model: Address): DynamoDBAddress {
+            val record = DynamoDBAddress()
             record.id = model.id
             record.alias = model.alias
             record.address = model.address

@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.api.model.customer
+package com.xsc.mundiagua.api.dto.customer
 
 import com.xsc.mundiagua.service.model.customer.Address
 

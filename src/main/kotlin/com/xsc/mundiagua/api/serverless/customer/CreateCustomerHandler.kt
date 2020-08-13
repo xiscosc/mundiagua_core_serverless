@@ -5,7 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.google.gson.Gson
-import com.xsc.mundiagua.api.model.customer.RequestCustomer
+import com.xsc.mundiagua.api.dto.customer.RequestCustomer
 import com.xsc.mundiagua.api.serverless.ServerlessResponse
 import com.xsc.mundiagua.service.CustomerService
 

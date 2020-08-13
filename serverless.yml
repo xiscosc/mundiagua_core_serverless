@@ -37,6 +37,7 @@ package:
   artifact: build/libs/mundiagua_kotlin-alpha-all.jar
 
 functions:
+  # CUSTOMER
   getCustomer:
     handler: com.xsc.mundiagua.api.serverless.customer.GetCustomerHandler
     events:

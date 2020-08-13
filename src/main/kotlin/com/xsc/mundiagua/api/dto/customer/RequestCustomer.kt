@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.api.model.customer
+package com.xsc.mundiagua.api.dto.customer
 
 import com.xsc.mundiagua.service.model.customer.Customer
 
@@ -21,8 +21,16 @@ data class RequestCustomer(
                 model.email,
                 model.internalCode,
                 model.nationalId,
-                model.addresses.map { RequestAddress.adaptFromModel(it) },
-                model.phones.map { RequestPhone.adaptFromModel(it) }
+                model.addresses.map {
+                    RequestAddress.adaptFromModel(
+                        it
+                    )
+                },
+                model.phones.map {
+                    RequestPhone.adaptFromModel(
+                        it
+                    )
+                }
             )
         }
 
@@ -34,8 +42,16 @@ data class RequestCustomer(
                 request.email,
                 request.internalCode,
                 request.nationalId,
-                request.addresses.map { RequestAddress.adaptToModel(it) },
-                request.phones.map { RequestPhone.adaptToModel(it) }
+                request.addresses.map {
+                    RequestAddress.adaptToModel(
+                        it
+                    )
+                },
+                request.phones.map {
+                    RequestPhone.adaptToModel(
+                        it
+                    )
+                }
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.repository.model.customer
+package com.xsc.mundiagua.repository.dynamomodel.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument
 import com.fasterxml.jackson.core.type.TypeReference
@@ -27,8 +27,8 @@ class DynamoDBPhone() {
             )
         }
 
-        fun adaptToDbRecord(model: Phone): DynamoDBPhone {
-            val record =  DynamoDBPhone()
+        fun adaptFromModel(model: Phone): DynamoDBPhone {
+            val record = DynamoDBPhone()
             record.id = model.id
             record.alias = model.alias
             record.countryCode = model.countryCode
