@@ -2,6 +2,7 @@ service: com-xsc-mundiagua
 
 custom:
   customerTableName: 'customer-table-${self:provider.stage}'
+  idTableName: 'id-table-${self:provider.stage}'
 
 provider:
   name: aws
@@ -26,10 +27,11 @@ provider:
         - dynamodb:BatchWriteItem
       Resource:
         - { "Fn::GetAtt": ["CustomerDynamoTable", "Arn" ] }
+        - { "Fn::GetAtt": ["IdDynamoTable", "Arn" ] }
         - { "Fn::Join": [ "/", [{ "Fn::GetAtt": ["CustomerDynamoTable", "Arn" ] }, "index", "*" ] ] }
   environment:
     CUSTOMER_TABLE: ${self:custom.customerTableName}
-
+    ID_TABLE: ${self:custom.idTableName}
 
 package:
   artifact: build/libs/mundiagua_kotlin-alpha-all.jar
@@ -91,3 +93,16 @@ resources:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
         TableName: ${self:custom.customerTableName}
+    IdDynamoTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: keyType
+            AttributeType: S
+        KeySchema:
+          - AttributeName: keyType
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.idTableName}

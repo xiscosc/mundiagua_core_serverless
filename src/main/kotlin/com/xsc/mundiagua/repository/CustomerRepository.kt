@@ -21,19 +21,12 @@ import java.util.*
 
 class CustomerRepository {
     private val client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.EU_WEST_3).build()
-    private val tableName = System.getenv("CUSTOMER_TABLE")
+    private val tableName = System.getenv(CUSTOMER_TABLE_NAME_ENV)
     private val config = DynamoDBMapperConfig
         .Builder()
         .withTableNameOverride(
             DynamoDBMapperConfig.TableNameOverride.withTableNameReplacement(tableName)
         )
-        .build()
-    private val partialUpadteConfig = DynamoDBMapperConfig
-        .Builder()
-        .withTableNameOverride(
-            DynamoDBMapperConfig.TableNameOverride.withTableNameReplacement(tableName)
-        )
-        .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.APPEND_SET)
         .build()
     private val mapper = DynamoDBMapper(client, config)
 
@@ -61,6 +54,7 @@ class CustomerRepository {
     fun saveNewCustomer(customer: Customer): Customer {
         val dynamoCustomer = DynamoDBCustomer.adaptToDbRecord(customer)
         dynamoCustomer.uuid = UUID.randomUUID().toString()
+        dynamoCustomer.id = getNewCustomerId()
         mapper.save(dynamoCustomer)
         return DynamoDBCustomer.adaptToModel(dynamoCustomer)
     }
@@ -95,6 +89,17 @@ class CustomerRepository {
 
         customerTable.updateItem(updateItemSpec)
         return address
+    }
+
+    private fun getNewCustomerId(): Int {
+        var attempts = 0
+        var id: Int? = null
+        while (attempts < NEW_ID_ATTEMPTS && id == null) {
+            attempts++
+            id = getNewId(DynamoDBCustomer.SECONDARY_INDEX_HASH_KEY, client)
+        }
+
+        return id ?: throw Exception()
     }
 
 }
