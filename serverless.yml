@@ -44,6 +44,12 @@ functions:
       - http:
           path: customer/{uuid}
           method: get
+  getCustomerList:
+    handler: com.xsc.mundiagua.api.serverless.customer.GetCustomerListHandler
+    events:
+      - http:
+          path: customer/list
+          method: get
   createCustomer:
     handler: com.xsc.mundiagua.api.serverless.customer.CreateCustomerHandler
     events:
@@ -69,7 +75,7 @@ resources:
       Type: 'AWS::DynamoDB::Table'
       Properties:
         AttributeDefinitions:
-          - AttributeName: key
+          - AttributeName: keyType
             AttributeType: S
           - AttributeName: id
             AttributeType: N
@@ -82,9 +88,9 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         GlobalSecondaryIndexes:
-          - IndexName: mundiaguaId
+          - IndexName: mundiaguaKeyType
             KeySchema:
-              - AttributeName: key
+              - AttributeName: keyType
                 KeyType: HASH
               - AttributeName: id
                 KeyType: RANGE

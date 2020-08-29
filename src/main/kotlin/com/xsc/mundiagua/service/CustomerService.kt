@@ -29,4 +29,8 @@ class CustomerService {
         customerRepository.saveNewAddress(customerUuid, address) ?: return null
         return address
     }
+
+    fun getCustomerList(oldFirst: Boolean, lastId: Int?, limit: Int?): List<Customer> {
+        return customerRepository.getCustomerList(oldFirst, lastId?.toString(), limit ?: DEFAULT_LIST_ITEMS)
+    }
 }

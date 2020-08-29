@@ -9,6 +9,9 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator
+import com.amazonaws.services.dynamodbv2.model.Condition
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
 import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBAddress
 import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBCustomer
@@ -24,9 +27,7 @@ class CustomerRepository {
     private val tableName = System.getenv(CUSTOMER_TABLE_NAME_ENV)
     private val config = DynamoDBMapperConfig
         .Builder()
-        .withTableNameOverride(
-            DynamoDBMapperConfig.TableNameOverride.withTableNameReplacement(tableName)
-        )
+        .withTableNameOverride(DynamoDBMapperConfig.TableNameOverride.withTableNameReplacement(tableName))
         .build()
     private val mapper = DynamoDBMapper(client, config)
 
@@ -44,11 +45,31 @@ class CustomerRepository {
             .withIndexName(DynamoDBCustomer.SECONDARY_INDEX_NAME)
 
         val items = mapper.query(DynamoDBCustomer::class.java, queryExpression)
-        return if (items.size == 0) {
+        return if (items.size != 1) {
             null
         } else {
             DynamoDBCustomer.adaptToModel(items[0])
         }
+    }
+
+    fun getCustomerList(scanForward: Boolean, lastEvaluatedKey: String?, limit: Int): List<Customer> {
+        val queryExpression= DynamoDBQueryExpression<DynamoDBCustomer>()
+            .withConsistentRead(false)
+            .withScanIndexForward(scanForward)
+            .withIndexName(DynamoDBCustomer.SECONDARY_INDEX_NAME)
+            .withHashKeyValues(DynamoDBCustomer())
+            .withLimit(limit)
+
+        if (!(lastEvaluatedKey.isNullOrBlank() || lastEvaluatedKey.isNullOrEmpty())) {
+            val operator = if (scanForward) ComparisonOperator.GT else ComparisonOperator.LT
+            val condition = Condition()
+                .withComparisonOperator(operator)
+                .withAttributeValueList(AttributeValue().withN(lastEvaluatedKey))
+            queryExpression.withRangeKeyCondition("id", condition)
+        }
+
+        val queryResult = mapper.queryPage(DynamoDBCustomer::class.java, queryExpression)
+        return queryResult.results.map { DynamoDBCustomer.adaptToModel(it) }
     }
 
     fun saveNewCustomer(customer: Customer): Customer {
