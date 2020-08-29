@@ -3,10 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
     `maven-publish`
-    id("io.spring.dependency-management") version ("1.0.9.RELEASE")
+    idea
     id("com.github.johnrengelman.shadow") version ("6.0.0")
+    kotlin("kapt") version "1.4.0"
 }
 
 group = "com.xsc"
@@ -20,13 +21,12 @@ tasks.withType<ShadowJar> {
     transform(Log4j2PluginsCacheFileTransformer::class.java)
 }
 
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.3.72")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.0")
     implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.832"))
     implementation("com.amazonaws:aws-java-sdk-dynamodb")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
@@ -35,6 +35,8 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.google.code.gson:gson:2.8.6")
     testImplementation(kotlin("test-junit"))
+    implementation("com.google.dagger:dagger:2.28.3")
+    kapt("com.google.dagger:dagger-compiler:2.28.3")
 }
 
 tasks.build {

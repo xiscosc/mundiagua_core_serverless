@@ -4,20 +4,20 @@ import com.xsc.mundiagua.service.model.customer.Customer
 import com.xsc.mundiagua.repository.CustomerRepository
 import com.xsc.mundiagua.service.model.customer.Address
 import com.xsc.mundiagua.service.model.customer.Phone
+import javax.inject.Inject
 
-class CustomerService {
-    private val customerRepository = CustomerRepository()
+class CustomerService @Inject constructor(private val customerRepository: CustomerRepository) {
 
     fun saveCustomer(customer: Customer): Customer {
-        return customerRepository.saveNewCustomer(customer)
+        return customerRepository.save(customer)
     }
 
     fun getCustomer(customerId: Int): Customer? {
-        return customerRepository.getCustomer(customerId) ?: return null
+        return customerRepository.getById(customerId) ?: return null
     }
 
     fun getCustomer(customerUuid: String): Customer? {
-        return customerRepository.getCustomer(customerUuid) ?: return null
+        return customerRepository.getByUUID(customerUuid) ?: return null
     }
 
     fun savePhone(customerUuid: String, phone: Phone): Phone? {
@@ -31,6 +31,6 @@ class CustomerService {
     }
 
     fun getCustomerList(oldFirst: Boolean, lastId: Int?, limit: Int?): List<Customer> {
-        return customerRepository.getCustomerList(oldFirst, lastId?.toString(), limit ?: DEFAULT_LIST_ITEMS)
+        return customerRepository.getList(oldFirst, lastId?.toString(), limit ?: DEFAULT_LIST_ITEMS)
     }
 }

@@ -1,7 +1,6 @@
 package com.xsc.mundiagua.repository
 
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression
@@ -13,17 +12,20 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator
 import com.amazonaws.services.dynamodbv2.model.Condition
 import com.amazonaws.services.dynamodbv2.model.ReturnValue
-import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBAddress
-import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBCustomer
-import com.xsc.mundiagua.repository.dynamomodel.customer.DynamoDBPhone
+import com.xsc.mundiagua.repository.dynamodb.id.DynamoIdManager
+import com.xsc.mundiagua.repository.dynamodb.model.customer.DynamoDBAddress
+import com.xsc.mundiagua.repository.dynamodb.model.customer.DynamoDBCustomer
+import com.xsc.mundiagua.repository.dynamodb.model.customer.DynamoDBPhone
 import com.xsc.mundiagua.service.model.customer.Address
 import com.xsc.mundiagua.service.model.customer.Customer
 import com.xsc.mundiagua.service.model.customer.Phone
 import java.util.*
+import javax.inject.Inject
 
-
-class CustomerRepository {
-    private val client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.EU_WEST_3).build()
+class CustomerRepository @Inject constructor(
+    private val client: AmazonDynamoDB,
+    private val idManager: DynamoIdManager
+): RepositoryInterface<Customer> {
     private val tableName = System.getenv(CUSTOMER_TABLE_NAME_ENV)
     private val config = DynamoDBMapperConfig
         .Builder()
@@ -31,12 +33,12 @@ class CustomerRepository {
         .build()
     private val mapper = DynamoDBMapper(client, config)
 
-    fun getCustomer(uuid: String): Customer? {
+    override fun getByUUID(uuid: String): Customer? {
         val dynamoCustomer = mapper.load(DynamoDBCustomer::class.java, uuid, config) ?: return null
         return DynamoDBCustomer.adaptToModel(dynamoCustomer)
     }
 
-    fun getCustomer(id: Int): Customer? {
+    override fun getById(id: Int): Customer? {
         val customer = DynamoDBCustomer()
         customer.id = id
         val queryExpression= DynamoDBQueryExpression<DynamoDBCustomer>()
@@ -52,7 +54,7 @@ class CustomerRepository {
         }
     }
 
-    fun getCustomerList(scanForward: Boolean, lastEvaluatedKey: String?, limit: Int): List<Customer> {
+    override fun getList(scanForward: Boolean, lastEvaluatedKey: String?, limit: Int): List<Customer> {
         val queryExpression= DynamoDBQueryExpression<DynamoDBCustomer>()
             .withConsistentRead(false)
             .withScanIndexForward(scanForward)
@@ -72,8 +74,8 @@ class CustomerRepository {
         return queryResult.results.map { DynamoDBCustomer.adaptToModel(it) }
     }
 
-    fun saveNewCustomer(customer: Customer): Customer {
-        val dynamoCustomer = DynamoDBCustomer.adaptFromModel(customer)
+    override fun save(model: Customer): Customer {
+        val dynamoCustomer = DynamoDBCustomer.adaptFromModel(model)
         dynamoCustomer.uuid = UUID.randomUUID().toString()
         dynamoCustomer.id = getNewCustomerId()
         mapper.save(dynamoCustomer)
@@ -90,7 +92,7 @@ class CustomerRepository {
             .withUpdateExpression("set phones.#phoneid = :phone")
             .withNameMap(NameMap().with("#phoneid", phoneId))
             .withValueMap(ValueMap().withMap(":phone", dynamoPhone.toValueMap()))
-            .withReturnValues(ReturnValue.ALL_NEW);
+            .withReturnValues(ReturnValue.ALL_NEW)
 
         customerTable.updateItem(updateItemSpec)
         return phone
@@ -106,7 +108,7 @@ class CustomerRepository {
             .withUpdateExpression("set addresses.#addressid = :address")
             .withNameMap(NameMap().with("#addressid", addressId))
             .withValueMap(ValueMap().withMap(":address", dynamoAddress.toValueMap()))
-            .withReturnValues(ReturnValue.ALL_NEW);
+            .withReturnValues(ReturnValue.ALL_NEW)
 
         customerTable.updateItem(updateItemSpec)
         return address
@@ -117,7 +119,7 @@ class CustomerRepository {
         var id: Int? = null
         while (attempts < NEW_ID_ATTEMPTS && id == null) {
             attempts++
-            id = getNewId(DynamoDBCustomer.SECONDARY_INDEX_HASH_KEY, client)
+            id = idManager.getNewId(DynamoDBCustomer.SECONDARY_INDEX_HASH_KEY)
         }
 
         return id ?: throw Exception()

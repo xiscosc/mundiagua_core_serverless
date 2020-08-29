@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.repository.dynamomodel.customer
+package com.xsc.mundiagua.repository.dynamodb.model.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument
 import com.fasterxml.jackson.core.type.TypeReference

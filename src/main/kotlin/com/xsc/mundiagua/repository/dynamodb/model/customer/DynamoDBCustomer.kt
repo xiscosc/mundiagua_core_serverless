@@ -1,4 +1,4 @@
-package com.xsc.mundiagua.repository.dynamomodel.customer
+package com.xsc.mundiagua.repository.dynamodb.model.customer
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*
 import com.xsc.mundiagua.repository.ID_HASH_KEY_NAME
