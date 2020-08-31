@@ -8,5 +8,5 @@ interface RepositoryInterface<T> {
 
     fun save(model: T): T
 
-    fun getList(scanForward: Boolean, lastEvaluatedKey: String?, limit: Int): List<T>
+    fun getList(scanForward: Boolean, lastEvaluatedKey: Int?, limit: Int): List<T>
 }

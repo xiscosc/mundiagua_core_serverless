@@ -1,35 +1,32 @@
 package com.xsc.mundiagua.repository.dynamodb.model.customer
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*
-import com.xsc.mundiagua.repository.ID_HASH_KEY_NAME
 import com.xsc.mundiagua.service.model.customer.Customer
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey
 
+@DynamoDbBean
 class DynamoDBCustomer {
-    @get:DynamoDBIndexHashKey(attributeName = ID_HASH_KEY_NAME, globalSecondaryIndexName = SECONDARY_INDEX_NAME)
+    @get:DynamoDbSecondaryPartitionKey(indexNames = [SECONDARY_INDEX_NAME])
     var keyType: String = SECONDARY_INDEX_HASH_KEY
 
-    @get:DynamoDBIndexRangeKey(attributeName = "id", globalSecondaryIndexName = SECONDARY_INDEX_NAME)
+    @get:DynamoDbSecondarySortKey(indexNames = [SECONDARY_INDEX_NAME])
     var id: Int? = null
 
-    @get:DynamoDBHashKey(attributeName = "uuid")
+    @get:DynamoDbPartitionKey
     var uuid: String? = null
 
-    @get:DynamoDBAttribute(attributeName = "name")
     var name: String? = null
 
-    @get:DynamoDBAttribute(attributeName = "email")
     var email: String? = null
 
-    @get:DynamoDBAttribute(attributeName = "internalCode")
     var internalCode: String? = null
 
-    @get:DynamoDBAttribute(attributeName = "nationalId")
     var nationalId: String? = null
 
-    @get:DynamoDBAttribute(attributeName = "phones")
     var phones: MutableMap<String, DynamoDBPhone>? = null
 
-    @get:DynamoDBAttribute(attributeName = "addresses")
     var addresses: MutableMap<String, DynamoDBAddress>? = null
 
     companion object {
