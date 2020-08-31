@@ -27,11 +27,14 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.0")
-    implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.832"))
-    implementation("com.amazonaws:aws-java-sdk-dynamodb")
+//    implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.832"))
+//    implementation("com.amazonaws:aws-java-sdk-dynamodb")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
     implementation("com.amazonaws:aws-lambda-java-events:3.1.1")
     implementation("com.amazonaws:aws-lambda-java-log4j2:1.2.0")
+    implementation(platform("software.amazon.awssdk:bom:2.14.7"))
+    implementation("software.amazon.awssdk:dynamodb")
+    implementation("software.amazon.awssdk:dynamodb-enhanced")
     implementation("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.google.code.gson:gson:2.8.6")
     testImplementation(kotlin("test-junit"))

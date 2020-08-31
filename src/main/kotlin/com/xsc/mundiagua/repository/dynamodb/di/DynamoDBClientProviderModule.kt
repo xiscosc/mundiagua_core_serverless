@@ -1,10 +1,9 @@
 package com.xsc.mundiagua.repository.dynamodb.di
 
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import dagger.Module
 import dagger.Provides
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import javax.inject.Singleton
 
 @Module
@@ -12,7 +11,7 @@ class DynamoDBClientProviderModule {
 
     @Singleton
     @Provides
-    fun provideDynamoDBClient(): AmazonDynamoDB {
-        return AmazonDynamoDBClientBuilder.standard().withRegion(Regions.EU_WEST_3).build()
+    fun provideDynamoDBClient(): DynamoDbClient {
+        return DynamoDbClient.builder().region(Region.EU_WEST_3).build()
     }
 }

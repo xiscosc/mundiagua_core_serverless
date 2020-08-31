@@ -1,20 +1,24 @@
 package com.xsc.mundiagua.repository.dynamodb.model.customer
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.xsc.mundiagua.service.model.customer.Phone
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 
-@DynamoDBDocument
+@DynamoDbBean
 class DynamoDBPhone() {
     var id: String? = null
     var alias: String? = null
     var countryCode: Int? = null
     var phoneNumber: Int? = null
 
-    fun toValueMap(): Map<String, Any?>
+    fun toValueMap(): Map<String, AttributeValue>
     {
-        return ObjectMapper().convertValue<Map<String, Any?>>(this, object: TypeReference<Map<String, Any?>>() {})
+        return mapOf(
+            "id" to AttributeValue.builder().s(id ?: "").build(),
+            "alias" to AttributeValue.builder().s(alias ?: "").build(),
+            "countryCode" to AttributeValue.builder().n(countryCode?.toString() ?: "0").build(),
+            "phoneNumber" to AttributeValue.builder().n(phoneNumber?.toString() ?: "0").build(),
+        )
     }
 
     companion object {

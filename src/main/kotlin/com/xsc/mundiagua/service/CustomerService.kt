@@ -13,11 +13,11 @@ class CustomerService @Inject constructor(private val customerRepository: Custom
     }
 
     fun getCustomer(customerId: Int): Customer? {
-        return customerRepository.getById(customerId) ?: return null
+        return customerRepository.getById(customerId)
     }
 
     fun getCustomer(customerUuid: String): Customer? {
-        return customerRepository.getByUUID(customerUuid) ?: return null
+        return customerRepository.getByUUID(customerUuid)
     }
 
     fun savePhone(customerUuid: String, phone: Phone): Phone? {
@@ -31,6 +31,6 @@ class CustomerService @Inject constructor(private val customerRepository: Custom
     }
 
     fun getCustomerList(oldFirst: Boolean, lastId: Int?, limit: Int?): List<Customer> {
-        return customerRepository.getList(oldFirst, lastId?.toString(), limit ?: DEFAULT_LIST_ITEMS)
+        return customerRepository.getList(oldFirst, lastId, limit ?: DEFAULT_LIST_ITEMS)
     }
 }
