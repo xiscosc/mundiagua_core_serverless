@@ -8,5 +8,6 @@ data class Customer(
         val internalCode: String?,
         val nationalId: String?,
         val addresses: List<Address>,
-        val phones: List<Phone>
+        val phones: List<Phone>,
+        val blocked: Boolean
 )

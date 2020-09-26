@@ -10,7 +10,8 @@ data class RequestCustomer(
     val internalCode: String?,
     val nationalId: String?,
     val addresses: List<RequestAddress> = listOf(),
-    val phones: List<RequestPhone> = listOf()
+    val phones: List<RequestPhone> = listOf(),
+    val blocked: Boolean = false
 ) {
     companion object {
         fun adaptFromModel(model: Customer): RequestCustomer {
@@ -30,7 +31,8 @@ data class RequestCustomer(
                     RequestPhone.adaptFromModel(
                         it
                     )
-                }
+                },
+                model.blocked
             )
         }
 
@@ -51,7 +53,8 @@ data class RequestCustomer(
                     RequestPhone.adaptToModel(
                         it
                     )
-                }
+                },
+                request.blocked
             )
         }
     }

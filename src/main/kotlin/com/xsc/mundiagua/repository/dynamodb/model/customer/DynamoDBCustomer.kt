@@ -29,6 +29,8 @@ class DynamoDBCustomer {
 
     var addresses: MutableMap<String, DynamoDBAddress>? = null
 
+    var blocked: Boolean = false
+
     companion object {
         const val PRIMARY_INDEX_HASH_KEY = "uuid"
         const val SECONDARY_INDEX_HASH_KEY = "CUSTOMER"
@@ -43,7 +45,8 @@ class DynamoDBCustomer {
                 dbrecord.internalCode,
                 dbrecord.nationalId,
                 dbrecord.addresses?.map { DynamoDBAddress.adaptToModel(it.value) } ?: listOf(),
-                dbrecord.phones?.map { DynamoDBPhone.adaptToModel(it.value) } ?: listOf()
+                dbrecord.phones?.map { DynamoDBPhone.adaptToModel(it.value) } ?: listOf(),
+                dbrecord.blocked
             )
         }
 
@@ -57,6 +60,7 @@ class DynamoDBCustomer {
             record.nationalId = model.nationalId
             record.addresses = model.addresses.map {it.id to DynamoDBAddress.adaptFromModel(it)}.toMap().toMutableMap()
             record.phones = model.phones.map { it.id to DynamoDBPhone.adaptFromModel(it) }.toMap().toMutableMap()
+            record.blocked = model.blocked
             return record
         }
     }
