@@ -10,15 +10,14 @@ before_install:
   - pip install -U pip
   - pip install awscli
   - mkdir -p ~/$TRAVIS_BUILD_NUMBER
-  - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
 
-language: java
 install: skip
-jdk: oraclejdk11
 
 jobs:
   include:
     - stage: "BUILD"
+      language: java
+      jdk: oraclejdk11
       script:
         - ./gradlew build
         - cp build/libs/mundiagua_kotlin-serverless-all.jar ~/$TRAVIS_BUILD_NUMBER/.

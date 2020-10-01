@@ -6,7 +6,7 @@ custom:
 
 provider:
   name: aws
-  runtime: java8
+  runtime: java11
   stage: dev
   logs:
     restApi: true
@@ -34,7 +34,7 @@ provider:
     ID_TABLE: ${self:custom.idTableName}
 
 package:
-  artifact: ~/${TRAVIS_BUILD_NUMBER}/mundiagua_kotlin-serverless-all.jar
+  artifact: ~/${env:TRAVIS_BUILD_NUMBER}/mundiagua_kotlin-serverless-all.jar
 
 functions:
   # CUSTOMER
