@@ -4,3 +4,4 @@
 - Kotlin
 - Dagger
 - Java AWS SDK 2
+- DynamoDB
