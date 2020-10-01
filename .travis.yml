@@ -22,7 +22,9 @@ jobs:
         - ./gradlew build
         - cp build/libs/mundiagua_kotlin-serverless-all.jar ~/$TRAVIS_BUILD_NUMBER/.
         - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER
-    - stage: "DEPLOY"
+
+    - stage: "DEPLOY DEVELOPMENT"
+      if: branch != master
       language: node_js
       node_js:
         - node
@@ -32,4 +34,21 @@ jobs:
       script:
         - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
         - npm install -g serverless
-        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar)
+        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar) --stage=dev
+
+    - stage: "DEPLOY PRODUCTION"
+      if: branch = master
+      language: node_js
+      node_js:
+        - node
+      cache:
+        directories:
+          - node_modules
+      script:
+        - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+        - npm install -g serverless
+        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar) --stage=prod
+
+    - stage: "CLEAN S3"
+      script:
+        - aws s3 rm s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER --recursive
