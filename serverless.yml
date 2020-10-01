@@ -34,7 +34,7 @@ provider:
     ID_TABLE: ${self:custom.idTableName}
 
 package:
-  artifact: build/libs/mundiagua_kotlin-alpha-all.jar
+  artifact: build/libs/mundiagua_kotlin-serverless-all.jar
 
 functions:
   # CUSTOMER

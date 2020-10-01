@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.xsc"
-version = "alpha"
+version = "serverless"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
@@ -27,8 +27,6 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.0")
-//    implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.832"))
-//    implementation("com.amazonaws:aws-java-sdk-dynamodb")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
     implementation("com.amazonaws:aws-lambda-java-events:3.1.1")
     implementation("com.amazonaws:aws-lambda-java-log4j2:1.2.0")

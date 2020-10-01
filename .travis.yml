@@ -1,9 +1,26 @@
+dist: focal
+os: linux
+
+env:
+  global:
+    # include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
+
+before_install:
+  - pyenv global 3.7.1
+  - pip install -U pip
+  - pip install awscli
+  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+  - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+
 language: java
 install: skip
 
-os: linux
-dist: trusty
 jdk: oraclejdk8
 
 script:
   - ./gradlew build
+  - cp build/libs/mundiagua_kotlin-serverless-all.jar ~/$TRAVIS_BUILD_NUMBER/.
+
+after_success:
+  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER
