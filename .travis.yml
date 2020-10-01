@@ -24,6 +24,8 @@ jobs:
         - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER
     - stage: "DEPLOY"
       language: node_js
+      node_js:
+        - node
       cache:
         directories:
           - node_modules
