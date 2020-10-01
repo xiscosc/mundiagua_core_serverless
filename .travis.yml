@@ -1,4 +1,4 @@
-dist: bionic
+dist: focal
 os: linux
 
 env:
@@ -16,7 +16,7 @@ before_install:
 language: java
 install: skip
 
-jdk: oraclejdk8
+jdk: openjdk8
 
 script:
   - ./gradlew build
