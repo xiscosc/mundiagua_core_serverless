@@ -14,17 +14,15 @@ provider:
     apiGateway: true
     lambda: true
   region: eu-west-3
+
   httpApi:
     authorizers:
-      serviceAuthorizer:
+      someJwtAuthorizer:
         identitySource: $request.header.Authorization
-        issuerUrl:
-          Fn::Join:
-            - ''
-            - - ${opt:userpool}
-              - Ref: serviceUserPool
+        issuerUrl: ${opt:userpool}
         audience:
-          - Ref: serviceUserPoolClient
+          - ${env:CLIENT_TEST}
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -55,35 +53,40 @@ functions:
       - http:
           path: customer/{uuid}
           method: get
-          authorizer: serviceAuthorizer
+          authorizer:
+            name: someJwtAuthorizer
   getCustomerList:
     handler: com.xsc.mundiagua.api.serverless.customer.GetCustomerListHandler
     events:
       - http:
           path: customer/list
           method: get
-          authorizer: serviceAuthorizer
+          authorizer:
+            name: someJwtAuthorizer
   createCustomer:
     handler: com.xsc.mundiagua.api.serverless.customer.CreateCustomerHandler
     events:
       - http:
           path: customer
           method: post
-          authorizer: serviceAuthorizer
+          authorizer:
+            name: someJwtAuthorizer
   createCustomerPhone:
     handler: com.xsc.mundiagua.api.serverless.customer.CreatePhoneHandler
     events:
       - http:
           path: customer/{uuid}/phone
           method: post
-          authorizer: serviceAuthorizer
+          authorizer:
+            name: someJwtAuthorizer
   createCustomerAddress:
     handler: com.xsc.mundiagua.api.serverless.customer.CreateAddressHandler
     events:
       - http:
           path: customer/{uuid}/address
           method: post
-          authorizer: serviceAuthorizer
+          authorizer:
+            name: someJwtAuthorizer
 
 resources:
   Resources:
