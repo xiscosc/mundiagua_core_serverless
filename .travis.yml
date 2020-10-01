@@ -34,7 +34,7 @@ jobs:
       script:
         - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
         - npm install -g serverless
-        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar) --stage=dev
+        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar) --stage=dev --userpool=$AWS_USER_POOL_DEV
 
     - stage: "DEPLOY PRODUCTION"
       if: branch = master
@@ -47,7 +47,7 @@ jobs:
       script:
         - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
         - npm install -g serverless
-        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar) --stage=prod
+        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar) --stage=prod --userpool=$AWS_USER_POOL_PROD
 
     - stage: "CLEAN S3"
       script:
