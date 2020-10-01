@@ -23,10 +23,11 @@ jobs:
         - cp build/libs/mundiagua_kotlin-serverless-all.jar ~/$TRAVIS_BUILD_NUMBER/.
         - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER
     - stage: "DEPLOY"
+      language: node_js
       cache:
         directories:
           - node_modules
       script:
         - aws s3 sync s3://$S3_BUILD_BUCKET/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
         - npm install -g serverless
-        - sls deploy
+        - sls deploy --artifact=$(realpath ~/$TRAVIS_BUILD_NUMBER/mundiagua_kotlin-serverless-all.jar)
